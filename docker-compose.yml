@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  todo_service:
+    build: ./todo_service
+    command: bash -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    volumes:
+      - ./todo_service/:/app/
+    ports:
+      - 8000:8000
+    networks:
+      - connect
+
+  postgres:
+    image: postgres
+    env_file:
+      - ./todo_service/.env
+    volumes:
+      - ./.var/postgresql:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - connect
+
+networks:
+  connect:
+    driver: bridge
